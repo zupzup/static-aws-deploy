@@ -1,0 +1,41 @@
+auth:
+    accesskey: 'myAccessKey'
+    key: 'myKey'
+s3:
+    bucket:
+        name: 'myBucket'
+    parallel: 4
+    source: './data'
+    ignore: '\.DS_Store'
+    metadata:
+        - regex: '\.html?$'
+          headers:
+              - 'Content-Type': 'text/html'
+        - regex: '\.xml$'
+          headers:
+              - 'Content-Type': 'text/xml'
+        - regex: '\.txt$'
+          headers:
+              - 'Content-Type': 'text/plain'
+        - regex: '\.ico$'
+          headers:
+              - 'Cache-Control': 'public, max-age=31536000'
+              - 'Content-Type': 'image/x-icon'
+        - regex: '\.jpeg?$'
+          headers:
+              - 'Cache-Control': 'public, max-age=31536000'
+              - 'Content-Type': 'image/jpeg'
+        - regex: '\.png$'
+          headers:
+              - 'Cache-Control': 'public, max-age=31536000'
+              - 'Content-Type': 'image/png'
+        - regex: '\.gif$'
+          headers:
+              - 'Cache-Control': 'public, max-age=31536000'
+              - 'Content-Type': 'image/gif'
+cloudfront:
+    distribution: 
+        id: 'myDistribution'
+    invalidation:
+        - '/'
+        - '/archive/*'
