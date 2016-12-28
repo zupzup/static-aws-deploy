@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "j1tq/amPQVXlwHuK1Yrvi93hbB0=",
+			"path": "github.com/beevik/etree",
+			"revision": "ce53c4ce608a92897d74ff8fd47b5a1131e5606c",
+			"revisionTime": "2016-07-16T01:46:57Z"
+		},
+		{
+			"checksumSHA1": "iy7TNc01LWFOGwRwD6v0iDRqtLU=",
+			"path": "github.com/smartystreets/go-aws-auth",
+			"revision": "2043e6d0bb7e4c18464a7bba562acbe482e3cabd",
+			"revisionTime": "2016-07-22T04:48:03Z"
+		},
+		{
+			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "a5b47d31c556af34a302ce5d659e6fea44d90de0",
+			"revisionTime": "2016-09-28T15:37:09Z"
+		}
+	],
+	"rootPath": "github.com/zupzup/static-aws-deploy"
+}
