@@ -5,7 +5,7 @@ import (
 	"fmt"
 	awsauth "github.com/smartystreets/go-aws-auth"
 	"io"
-	"mime/multipart"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -131,23 +131,12 @@ func uploadFile(config *Config, file string, headers []Header, logger io.Writer)
 	}
 	defer f.Close()
 
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, err := writer.CreateFormFile(uploadPath, filepath.Base(file))
+	fileContents, err := ioutil.ReadAll(f)
 	if err != nil {
-		return fmt.Errorf("could not create upload file: %s, %v", filepath.Base(file), err)
+		return fmt.Errorf("could not read file: %s, %v", file, err)
 	}
-	_, err = io.Copy(part, f)
-	if err != nil {
-		return fmt.Errorf("could not create upload file: %s, %v", filepath.Base(file), err)
-	}
-	err = writer.Close()
-	if err != nil {
-		return fmt.Errorf("could not create upload file: %s, %v", filepath.Base(file), err)
-	}
-
 	client := &http.Client{}
-	req, err := http.NewRequest("PUT", fmt.Sprintf("https://s3.amazonaws.com/%s/%s", config.Bucket.Name, uploadPath), body)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("https://s3.amazonaws.com/%s/%s", config.Bucket.Name, uploadPath), bytes.NewBuffer(fileContents))
 	if err != nil {
 		return fmt.Errorf("could not upload file to bucket: %s, %v", config.Bucket.Name, err)
 	}
