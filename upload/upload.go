@@ -61,7 +61,7 @@ func ParseFiles(config *Config) (Files, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not read source directory: %s, %v", source, err)
 	}
-	for file, _ := range result {
+	for file := range result {
 		for _, metadata := range config.Metadata {
 			re, err = regexp.Compile(metadata.Regex)
 			if err != nil {
@@ -147,7 +147,7 @@ func uploadFile(config *Config, file string, headers []Header, logger io.Writer)
 	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest("PUT", fmt.Sprintf("https://%s.s3.amazonaws.com/%s", config.Bucket.Name, uploadPath), body)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("https://s3.amazonaws.com/%s/%s", config.Bucket.Name, uploadPath), body)
 	if err != nil {
 		return fmt.Errorf("could not upload file to bucket: %s, %v", config.Bucket.Name, err)
 	}
@@ -161,6 +161,9 @@ func uploadFile(config *Config, file string, headers []Header, logger io.Writer)
 		SecretAccessKey: config.Bucket.Key,
 	})
 	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("could not execute request to aws, %v", err)
+	}
 	defer resp.Body.Close()
 	_, err = io.Copy(logger, resp.Body)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 // Config is the configuration object for the invalidator
 type Config struct {
 	Distribution struct {
-		Id        string
+		ID        string
 		Accesskey string
 		Key       string
 	}
@@ -24,7 +24,7 @@ func Do(config *Config, dryRun bool, logger io.Writer) error {
 	if len(config.Invalidation) == 0 {
 		return fmt.Errorf("no invalidation paths specified")
 	}
-	if config.Distribution.Id == "" {
+	if config.Distribution.ID == "" {
 		return fmt.Errorf("no distribution specified")
 	}
 	fmt.Fprintf(logger, "Invalidating %d Cloudfront URLs\n", len(config.Invalidation))
@@ -47,7 +47,7 @@ func createXML(config *Config) *etree.Document {
 	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
 	invalidationBatch := doc.CreateElement("InvalidationBatch")
 	callerReference := invalidationBatch.CreateElement("CallerReference")
-	callerReference.SetText(fmt.Sprintf("%s - %s", config.Distribution.Id, time.Now()))
+	callerReference.SetText(fmt.Sprintf("%s - %s", config.Distribution.ID, time.Now()))
 	paths := invalidationBatch.CreateElement("Paths")
 	items := paths.CreateElement("Items")
 	for _, path := range config.Invalidation {
@@ -72,7 +72,7 @@ func invalidate(doc *etree.Document, config *Config, logger io.Writer) error {
 	}()
 
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", fmt.Sprintf("https://cloudfront.amazonaws.com/2016-11-25/distribution/%s/invalidation", config.Distribution.Id), pr)
+	req, err := http.NewRequest("POST", fmt.Sprintf("https://cloudfront.amazonaws.com/2016-11-25/distribution/%s/invalidation", config.Distribution.ID), pr)
 	if err != nil {
 		return fmt.Errorf("could not invalidate paths, %v", err)
 	}
@@ -81,6 +81,9 @@ func invalidate(doc *etree.Document, config *Config, logger io.Writer) error {
 		SecretAccessKey: config.Distribution.Key,
 	})
 	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("could not execute request to aws, %v", err)
+	}
 	defer resp.Body.Close()
 	_, err = io.Copy(logger, resp.Body)
 	if err != nil {
