@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+// Config is the combined config for uploading and invalidating
 type Config struct {
 	Auth struct {
 		Accesskey string
@@ -25,6 +26,7 @@ var (
 	configFile string
 	dryRun     bool
 	silent     bool
+	delta      bool
 )
 
 func init() {
@@ -34,6 +36,8 @@ func init() {
 	flag.BoolVar(&dryRun, "dr", false, "run the script without actually uploading or invalidating anything (shorthand)")
 	flag.BoolVar(&silent, "silent", false, "omit all log output")
 	flag.BoolVar(&silent, "s", false, "omit all log output (shorthand)")
+	flag.BoolVar(&delta, "delta", false, "only upload changed files")
+	flag.BoolVar(&delta, "d", false, "only upload changed files (shorthand)")
 }
 
 func main() {
@@ -46,11 +50,11 @@ func main() {
 	if silent {
 		logger = ioutil.Discard
 	}
-	files, err := upload.ParseFiles(&config.S3)
+	files, err := upload.ParseFiles(&config.S3, delta)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := upload.Do(&config.S3, files, dryRun, logger); err != nil {
+	if err := upload.Do(&config.S3, files, dryRun, delta, logger); err != nil {
 		log.Fatal(err)
 	}
 	if err := invalidate.Do(&config.Cloudfront, dryRun, logger); err != nil {

@@ -13,7 +13,7 @@ go get github.com/zupzup/static-aws-deploy
 ```
 ./static-aws-deploy
 
-./static-aws-deploy --silent --config=./data --dry-run
+./static-aws-deploy --silent --config=./data --dry-run --delta
 ```
 
 You can use the `dry-run` option to see which files would be uploaded and which URLs would be invalidated in a real run.
@@ -23,6 +23,7 @@ Commandline Options:
 * `--config, -c`: path to the configuration file (config.yml), default: `./config.yml`
 * `--dry-run, -dr`: run the script without actually uploading or invalidating anything, default: `false`
 * `--silent, -s`: omit all log output, default: `false`
+* `--delta, -d`: only upload changed files, default: `false`
 
 ## Configuration
 
@@ -75,10 +76,6 @@ cloudfront:
 If you don't provide any invalidation URLs, the invalidation won't be triggered.
 
 The AWS credentials can also be provided via environment variables named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-
-## Future
-
-Right now, the tool just uploads all files, without checking whether anything changed at all. In the future I plan to remedy this by including a `delta` deployment, which only uploads new things.
 
 ## Warning
 
