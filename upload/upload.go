@@ -230,7 +230,8 @@ func Do(config *Config, files Files, dryRun, delta bool, logger io.Writer) error
 
 // getUploadPath strips the sourceFolder and cleans the path for uploading
 func getUploadPath(config *Config, filePath string) string {
-	return strings.TrimPrefix(filePath, fmt.Sprintf("%s/", filepath.Clean(config.Source)))
+	nobs := strings.Replace(filePath, "\\", "/", -1)
+	return strings.TrimPrefix(nobs, fmt.Sprintf("%s/", filepath.Clean(config.Source)))
 }
 
 // uploadFile uploads a file to AWS S3 with the given headers,
